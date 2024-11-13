@@ -54,17 +54,9 @@ class ConsoleWindow:
         except Exception as ex:
             str(ex)
 
-    def get_positions(self, control) -> list:
-        positions = []
-        lines = str(control).split('\n')
-        for y, line in enumerate(lines):
-            for x, char in enumerate(line):
-                positions.append((control.location.y + y, control.location.x + x))
-        return positions
-
     def check_mouse_click(self, y: int, x: int, button: int):
         for control in self.controls:
-            if (y, x) in self.get_positions(control):
+            if (y, x) in control.get_plist():
                 control.on_click(MouseClickEventArgs(y, x, button))
 
     def key_handler(self, key: int) -> bool:
