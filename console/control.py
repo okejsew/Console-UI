@@ -11,8 +11,12 @@ class Control:
         self.parent: Optional['ConsoleWindow' | ContainerControl] = None
         self.location: Location = Location()
         self.visible: bool = True
-
         self.on_click: Optional[Event] = Event()
+        self.text: str = 'Control'
+
+    def set_text(self, text: str):
+        self.text = text
+        self.parent.update()
 
     def get_plist(self) -> list[tuple]:
         positions = []
