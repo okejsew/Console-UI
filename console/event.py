@@ -13,8 +13,6 @@ class Event:
         self.output = output
         return self
 
-class MouseClickEventArgs:
-    def __init__(self, y: int, x: int, button: int):
-        self.x: int = x
-        self.y: int = y
-        self.button: int = button
+class EventManager:
+    def __init__(self):
+        self.on_click: Event = Event()

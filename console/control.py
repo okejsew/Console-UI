@@ -1,6 +1,6 @@
 from typing import Optional, TYPE_CHECKING
 
-from console.event import Event
+from console.event import EventManager
 from console.layout import Location
 
 if TYPE_CHECKING:
@@ -8,15 +8,10 @@ if TYPE_CHECKING:
 
 class Control:
     def __init__(self):
-        self.parent: Optional['ConsoleWindow' | ContainerControl] = None
+        self.parent: Optional['ConsoleWindow'] = None
         self.location: Location = Location()
         self.visible: bool = True
-        self.on_click: Optional[Event] = Event()
-        self.text: str = 'Control'
-
-    def set_text(self, text: str):
-        self.text = text
-        self.parent.update()
+        self.event: EventManager = EventManager()
 
     def get_plist(self) -> list[tuple]:
         positions = []
@@ -29,17 +24,11 @@ class Control:
     def __str__(self):
         return 'Control'
 
-
-class InteractiveControl(Control):
+class TextControl(Control):
     def __init__(self):
         super().__init__()
+        self.text: str = 'TextControl'
 
-    def __str__(self):
-        return 'InveractiveControl'
-
-class ContainerControl(Control):
-    def __init__(self):
-        super().__init__()
-
-    def __str__(self):
-        return 'ContainerControl'
+    def set_text(self, new: str):
+        self.text = new
+        self.parent.update()
