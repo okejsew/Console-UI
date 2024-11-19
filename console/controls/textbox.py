@@ -13,7 +13,7 @@ class TextBox(TextControl):
         if not self.readonly:
             if key == 8:
                 self.text = self.text[:-1]
-            elif key == curses.KEY_ENTER:
+            elif key == 13:
                 self.text += '\n'
             else:
                 self.text += chr(key)
