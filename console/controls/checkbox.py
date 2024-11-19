@@ -6,9 +6,9 @@ class Checkbox(TextControl):
         super().__init__()
         self.text: str = 'Checkbox'
         self.checked: bool = False
-        self.event.on_click += self.__check
+        self.event.on_click.set_output(self.__check)
 
-    def __check(self):
+    def __check(self, e):  # noqa
         self.checked = not self.checked
 
     def __str__(self):

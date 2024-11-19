@@ -9,11 +9,5 @@ class Event:
         if self.output:
             self.output(*args, **kwargs)
 
-    def __iadd__(self, output: Callable):
+    def set_output(self, output: Callable):
         self.output = output
-        return self
-
-class EventManager:
-    def __init__(self):
-        self.on_click: Event = Event()
-        self.on_key: Event = Event()

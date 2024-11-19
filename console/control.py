@@ -1,6 +1,6 @@
 from typing import Optional, TYPE_CHECKING
 
-from console.event import EventManager
+from console.event_manager import EventManager
 from console.layout import Location
 
 if TYPE_CHECKING:

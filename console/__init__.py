@@ -3,6 +3,8 @@ from typing import Optional
 
 from console.control import Control
 from console.controls.label import Label
+from console.events.mouse_click import MouseClickEventArgs
+from console.events.on_key import OnKeyPressedEventArgs
 from console.layout import Location
 
 
@@ -55,11 +57,11 @@ class ConsoleWindow:
         except Exception as ex:
             str(ex)
 
-    def check_mouse_click(self, y: int, x: int):
+    def check_mouse_click(self, y: int, x: int, button: int):
         void_clicked = True
         for control in self.controls:
             if (y, x) in control.get_plist():
-                control.event.on_click()
+                control.event.on_click(MouseClickEventArgs(y, x, button))
                 self.focus = control
                 void_clicked = False
         if void_clicked:
@@ -70,10 +72,10 @@ class ConsoleWindow:
             self.end()
         elif key == curses.KEY_MOUSE:
             _, x, y, button, _ = curses.getmouse()
-            self.check_mouse_click(y, x)
+            self.check_mouse_click(y, x, button)
         else:
             if self.focus:
-                self.focus.event.on_key(key)
+                self.focus.event.on_key(OnKeyPressedEventArgs(key))
 
 
     def next(self, cwin: 'ConsoleWindow'):
