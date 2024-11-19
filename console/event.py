@@ -16,3 +16,4 @@ class Event:
 class EventManager:
     def __init__(self):
         self.on_click: Event = Event()
+        self.on_key: Event = Event()

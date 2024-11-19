@@ -8,8 +8,10 @@ from console.layout import Location
 
 class ConsoleWindow:
     def __init__(self):
+        self.is_showing: bool = False
         self.window: Optional[curses.window] = None
         self.controls: list[Control] = []
+        self.focus: Optional[Control] = None
 
     def add(self, control: Control):
         if control not in self.controls:
@@ -24,15 +26,15 @@ class ConsoleWindow:
         curses.mousemask(curses.ALL_MOUSE_EVENTS)
 
     def show(self):
+        self.is_showing = True
         curses.wrapper(self._show)
 
     def _show(self, window: curses.window):
         self.setup(window)
-        while True:
+        while self.is_showing:
             self.update()
             key = self.window.getch()
-            if self.key_handler(key):
-                break
+            self.key_handler(key)
 
     def update(self):
         self.window.clear()
@@ -54,23 +56,31 @@ class ConsoleWindow:
             str(ex)
 
     def check_mouse_click(self, y: int, x: int):
+        void_clicked = True
         for control in self.controls:
             if (y, x) in control.get_plist():
                 control.event.on_click()
+                self.focus = control
+                void_clicked = False
+        if void_clicked:
+            self.focus = None
 
-    def key_handler(self, key: int) -> bool:
+    def key_handler(self, key: int):
         if key == ord('q'):
             self.end()
-            return True
         elif key == curses.KEY_MOUSE:
             _, x, y, button, _ = curses.getmouse()
             self.check_mouse_click(y, x)
-        return False
+        else:
+            if self.focus:
+                self.focus.event.on_key(key)
+
 
     def next(self, cwin: 'ConsoleWindow'):
         self.end()
         cwin.show()
 
     def end(self):
+        self.is_showing = False
         self.window.clear()
         curses.endwin()
