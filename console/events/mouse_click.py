@@ -11,5 +11,5 @@ class MouseClickEvent(Event):
         super().__init__()
         self.output: Optional[Callable[[MouseClickEventArgs], None]] = None
 
-    def set_output(self, output: Callable[[MouseClickEventArgs], None]):
-        super().set_output(output)
+    def set(self, output: Callable[[MouseClickEventArgs], None]):
+        super().set(output)

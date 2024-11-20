@@ -1,25 +1,32 @@
-from console.control import TextControl
-from console.events.on_key import OnKeyPressedEventArgs
+from console import Control
+from console.events.key_pressed import KeyPressedEventArgs
+from console.keys import Keys
 
 
-class TextBox(TextControl):
+class TextBox(Control):
     def __init__(self):
         super().__init__()
+        self.text = ''
+        self.title = 'TextBox'
+        self.placeholder = 'Enter your text here'
         self.readonly: bool = False
-        self.event.on_key.set_output(self.__on_key)
+        self.event.on_key.set(self.key_pressed)
 
-    def __on_key(self, e: OnKeyPressedEventArgs):
-        if not self.readonly:
-            if e.key == 8:
-                self.text = self.text[:-1]
-            elif e.key == 13:
-                self.text += '\n'
-            else:
-                self.text += chr(e.key)
+    def key_pressed(self, e: KeyPressedEventArgs):
+        if e.key == Keys.BACKSPACE:
+            self.text = self.text[:-1] if self.text else self.text
+        elif e.key == 10:
+            self.text += '\n'
+        elif 32 <= e.key <= 126:
+            self.text += chr(e.key)
 
     def __str__(self):
-        sign = '*' if self.parent.focus is self else '┌'
-        top = sign + '─' * len(self.text) + '┐\n'
-        down = '└' + '─' * len(self.text) + '┘'
-        text = f'│{self.text}│\n'
-        return top + text + down
+        text = self.text.split('\n') if self.text else [self.placeholder]
+        size_x = max(*[len(line) for line in text], len(self.title))
+
+        result = f'┌{self.title.ljust(size_x, "─")}┐\n'
+        for line in text:
+            result += f'│{line.ljust(size_x)}│\n'
+        result += '└' + '─' * size_x + '┘'
+
+        return result

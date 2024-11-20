@@ -9,5 +9,5 @@ class Event:
         if self.output:
             self.output(*args, **kwargs)
 
-    def set_output(self, output: Callable):
+    def set(self, output: Callable):
         self.output = output

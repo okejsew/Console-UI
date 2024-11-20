@@ -1,7 +1,7 @@
-from console.control import TextControl
+from console import Control
 
 
-class Label(TextControl):
+class Label(Control):
     def __init__(self):
         super().__init__()
         self.text: str = 'Label'

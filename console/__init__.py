@@ -1,10 +1,12 @@
 import curses
+import time
+from threading import Thread
 from typing import Optional
 
 from console.control import Control
 from console.controls.label import Label
 from console.events.mouse_click import MouseClickEventArgs
-from console.events.on_key import OnKeyPressedEventArgs
+from console.events.key_pressed import KeyPressedEventArgs
 from console.layout import Location
 
 
@@ -12,6 +14,7 @@ class ConsoleWindow:
     def __init__(self):
         self.is_showing: bool = False
         self.window: Optional[curses.window] = None
+
         self.controls: list[Control] = []
         self.focus: Optional[Control] = None
 
@@ -22,7 +25,7 @@ class ConsoleWindow:
 
     def setup(self, window):
         self.window = window
-        curses.raw()
+        self.window.nodelay(True)
         curses.curs_set(0)
         curses.noecho()
         curses.mousemask(curses.ALL_MOUSE_EVENTS)
@@ -31,52 +34,67 @@ class ConsoleWindow:
         self.is_showing = True
         curses.wrapper(self._show)
 
+    def rendering(self):
+        while self.is_showing:
+            self.window.clear()
+            self.render_controls()
+            self.render_mouse()
+            self.window.refresh()
+            time.sleep(0.016)
+
     def _show(self, window: curses.window):
         self.setup(window)
+        Thread(target=self.rendering).start()
         while self.is_showing:
-            self.update()
             key = self.window.getch()
             self.key_handler(key)
 
-    def update(self):
-        self.window.clear()
+    def render_controls(self):
         for control in self.controls:
             if not control.visible: continue
             lines = str(control).split('\n')
-            for i, line in enumerate(lines):
-                self.draw_line(line, control.location.y + i, control.location.x)
-        self.window.refresh()
+            for oy, line in enumerate(lines):
+                for ox, char in enumerate(line):
+                    self.addch(char, control.location.y + oy, control.location.x + ox)
 
-    def draw_line(self, line: str, y: int, x: int):
-        for i, char in enumerate(line):
-            self.draw_char(char, y, x + i)
+    def render_mouse(self):
+        y, x, _ = self.get_mouse()
+        if x != 0 and y != 0:
+            self.addch('*', y, x)
 
-    def draw_char(self, char: str, y: int, x: int):
-        try:
+    @staticmethod
+    def get_mouse() -> tuple[int, int, int]:
+        _, x, y, _, button = curses.getmouse()
+        return y, x, button
+
+    def addch(self, char: str, y: int, x: int):
+        max_y, max_x = self.window.getmaxyx()
+        if 0 < y < max_y and 0 < x < max_x:
             self.window.addch(y, x, char)
-        except Exception as ex:
-            str(ex)
 
-    def check_mouse_click(self, y: int, x: int, button: int):
-        void_clicked = True
+    def click_handler(self):
+        void_clicked: bool = True
+        y, x, btn = self.get_mouse()
         for control in self.controls:
-            if (y, x) in control.get_plist():
-                control.event.on_click(MouseClickEventArgs(y, x, button))
+            start_y, start_x = control.location.y, control.location.x
+            size_y, size_x = control.get_size()
+            if start_y <= y < start_y + size_y and start_x <= x < start_x + size_x:
+                control.event.on_click(MouseClickEventArgs(y, x, btn))
                 self.focus = control
                 void_clicked = False
         if void_clicked:
             self.focus = None
 
     def key_handler(self, key: int):
+        if key == -1:
+            return
+
         if key == ord('q'):
             self.end()
         elif key == curses.KEY_MOUSE:
-            _, x, y, button, _ = curses.getmouse()
-            self.check_mouse_click(y, x, button)
-        else:
-            if self.focus:
-                self.focus.event.on_key(OnKeyPressedEventArgs(key))
-
+            self.click_handler()
+        elif self.focus:
+            self.focus.event.on_key(KeyPressedEventArgs(key))
 
     def next(self, cwin: 'ConsoleWindow'):
         self.end()

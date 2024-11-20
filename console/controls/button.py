@@ -1,6 +1,6 @@
-from console.control import TextControl
+from console import Control
 
-class Button(TextControl):
+class Button(Control):
     def __init__(self):
         super().__init__()
         self.text: str = 'Button'
