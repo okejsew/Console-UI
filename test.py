@@ -16,10 +16,12 @@ class MyWindow(ConsoleWindow):
 
         self.button = Button()
         self.button.location = Location(5, 1)
-        self.button.event.on_click.set(self.shimmy)
+        self.button.event.mouse_click.set(self.shimmy)
 
         self.label = Label()
         self.label.location = Location(7, 1)
+        self.label.event.mouse_enter.set(lambda: setattr(self.label, 'text', 'Hello!'))
+
 
         self.pb = ProgressBar()
         self.pb.location = Location(9, 1)
@@ -39,7 +41,6 @@ class MyWindow(ConsoleWindow):
 
     def shimmy(self, e): # noqa
         self.button.location = Location(randint(2, 25), randint(2, 117))
-        self.label.text = f'Button Location: {self.button.location}'
         self.pb.value = randint(0, 11)
 
 main = MyWindow()

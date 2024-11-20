@@ -10,7 +10,7 @@ class TextBox(Control):
         self.title = 'TextBox'
         self.placeholder = 'Enter your text here'
         self.readonly: bool = False
-        self.event.on_key.set(self.key_pressed)
+        self.event.key_pressed.set(self.key_pressed)
 
     def key_pressed(self, e: KeyPressedEventArgs):
         if e.key == Keys.BACKSPACE:

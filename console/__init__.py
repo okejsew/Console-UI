@@ -5,8 +5,8 @@ from typing import Optional
 
 from console.control import Control
 from console.controls.label import Label
-from console.events.mouse_click import MouseClickEventArgs
 from console.events.key_pressed import KeyPressedEventArgs
+from console.events.mouse_click import MouseClickEventArgs
 from console.layout import Location
 
 
@@ -17,6 +17,10 @@ class ConsoleWindow:
 
         self.controls: list[Control] = []
         self.focus: Optional[Control] = None
+        self.prev_controls: list[Control] = []
+        self.curr_controls: list[Control] = []
+        self.prev_pos = {'x': 0, 'y': 0}
+        self.controls_under_mouse: list[Control] = []
 
     def add(self, control: Control):
         if control not in self.controls:
@@ -38,7 +42,6 @@ class ConsoleWindow:
         while self.is_showing:
             self.window.clear()
             self.render_controls()
-            self.render_mouse()
             self.window.refresh()
             time.sleep(0.016)
 
@@ -46,8 +49,10 @@ class ConsoleWindow:
         self.setup(window)
         Thread(target=self.rendering).start()
         while self.is_showing:
+            self.update_controls_under_mouse()
             key = self.window.getch()
             self.key_handler(key)
+            self.mouse_hover_handler()
 
     def render_controls(self):
         for control in self.controls:
@@ -57,44 +62,54 @@ class ConsoleWindow:
                 for ox, char in enumerate(line):
                     self.addch(char, control.location.y + oy, control.location.x + ox)
 
-    def render_mouse(self):
-        y, x, _ = self.get_mouse()
-        if x != 0 and y != 0:
-            self.addch('*', y, x)
+    def addch(self, char: str, y: int, x: int):
+        max_y, max_x = self.window.getmaxyx()
+        if 0 < y < max_y and 0 < x < max_x:
+            self.window.addch(y, x, char)
 
     @staticmethod
     def get_mouse() -> tuple[int, int, int]:
         _, x, y, _, button = curses.getmouse()
         return y, x, button
 
-    def addch(self, char: str, y: int, x: int):
-        max_y, max_x = self.window.getmaxyx()
-        if 0 < y < max_y and 0 < x < max_x:
-            self.window.addch(y, x, char)
-
-    def click_handler(self):
-        void_clicked: bool = True
-        y, x, btn = self.get_mouse()
+    def update_controls_under_mouse(self):
+        y, x, _ = self.get_mouse()
+        self.curr_controls.clear()
         for control in self.controls:
             start_y, start_x = control.location.y, control.location.x
             size_y, size_x = control.get_size()
             if start_y <= y < start_y + size_y and start_x <= x < start_x + size_x:
-                control.event.on_click(MouseClickEventArgs(y, x, btn))
-                self.focus = control
-                void_clicked = False
+                self.curr_controls.append(control)
+
+    def mouse_click_handler(self):
+        void_clicked: bool = True
+        y, x, btn = self.get_mouse()
+        for control in self.curr_controls:
+            control.event.mouse_click(MouseClickEventArgs(y, x, btn))
+            self.focus = control
+            void_clicked = False
         if void_clicked:
             self.focus = None
+
+    def mouse_hover_handler(self):
+        for control in self.curr_controls:
+            if control not in self.prev_controls:
+                control.event.mouse_enter()
+        for control in self.prev_controls:
+            if control not in self.curr_controls:
+                control.event.mouse_exit()
+        self.prev_controls = self.curr_controls.copy()
+        self.curr_controls = []
 
     def key_handler(self, key: int):
         if key == -1:
             return
-
         if key == ord('q'):
             self.end()
         elif key == curses.KEY_MOUSE:
-            self.click_handler()
+            self.mouse_click_handler()
         elif self.focus:
-            self.focus.event.on_key(KeyPressedEventArgs(key))
+            self.focus.event.key_pressed(KeyPressedEventArgs(key))
 
     def next(self, cwin: 'ConsoleWindow'):
         self.end()
