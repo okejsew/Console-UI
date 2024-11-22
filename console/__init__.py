@@ -30,6 +30,7 @@ class ConsoleWindow:
     def setup(self, window):
         self.window = window
         self.window.nodelay(True)
+        self.window.keypad(True)
         curses.curs_set(0)
         curses.noecho()
         curses.mousemask(curses.ALL_MOUSE_EVENTS)
