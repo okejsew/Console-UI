@@ -5,6 +5,7 @@ from console.controls.button import Button
 from console.controls.checkbox import Checkbox
 from console.controls.label import Label
 from console.controls.progressbar import ProgressBar
+from console.controls.slider import Slider
 from console.controls.textbox import TextBox
 
 
@@ -22,6 +23,10 @@ class MyWindow(ConsoleWindow):
         self.label.location = Location(7, 1)
         self.label.event.mouse_enter.set(lambda: setattr(self.label, 'text', 'Hello!'))
 
+        self.s = Slider()
+        self.s.value = 4
+        self.s.location = Location(13, 1)
+        self.s.show_percents = True
 
         self.pb = ProgressBar()
         self.pb.location = Location(9, 1)
@@ -37,6 +42,7 @@ class MyWindow(ConsoleWindow):
         self.add(self.button)
         self.add(self.cb)
         self.add(self.pb)
+        self.add(self.s)
         self.times: int = 0
 
     def shimmy(self, e): # noqa

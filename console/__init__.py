@@ -64,7 +64,7 @@ class ConsoleWindow:
 
     def addch(self, char: str, y: int, x: int):
         max_y, max_x = self.window.getmaxyx()
-        if 0 < y < max_y and 0 < x < max_x:
+        if 0 <= y < max_y and 0 <= x < max_x:
             self.window.addch(y, x, char)
 
     @staticmethod

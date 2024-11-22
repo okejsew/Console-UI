@@ -9,6 +9,7 @@ class ProgressBar(Control):
         self.show_percents: bool = False
 
     def __str__(self):
+        self.value = max(min(self.value, self.max_value), 0)
         length = int(self.width * (self.value / self.max_value))
         result = '[{}]'.format(('#'*length).ljust(self.width))
         if self.show_percents:

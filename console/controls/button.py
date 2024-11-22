@@ -4,16 +4,15 @@ class Button(Control):
     def __init__(self):
         super().__init__()
         self.text: str = 'Button'
-        self.buffer: str = ''
         self.event.mouse_enter.set(self.mouse_enter)
         self.event.mouse_exit.set(self.mouse_exit)
+        self.__focused = False
 
     def mouse_enter(self):
-        self.buffer = self.text
-        self.text = self.text.upper()
+        self.__focused = True
 
     def mouse_exit(self):
-        self.text = self.buffer
+        self.__focused = False
 
     def __str__(self):
-        return f'[ {self.text} ]'
+        return f'[:{self.text}:]' if self.__focused else f'[ {self.text} ]'
