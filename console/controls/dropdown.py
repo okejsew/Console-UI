@@ -61,6 +61,7 @@ class DropDown(Control):
         dropdown = f'{self.sign_close if self.__is_open else self.sign_open} [ {text} ]\n'
         if self.__is_open:
             for item in items:
+                item = f'{item[:self.width - 2]}..' if len(item) >= self.width else item
                 dropdown += f'  | {item.ljust(self.width)} |\n'
 
         return dropdown
