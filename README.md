@@ -12,28 +12,17 @@
   - Прогресс-бары (`ProgressBar`)
   - Слайдеры (`Slider`)
   - Текстовые поля (`TextBox`)
-- **События:**
+- **Отслеживание событий:**
   - Нажатие клавиш
   - Клик мыши
   - Наведение/уход мыши
+  - Нажатие клавиш на клавиатуре
 
 ## Установка
 
-1. Клонируйте репозиторий:
-   ```bash
-   git clone https://github.com/yourusername/console-ui.git
-   ```
-
-2. Перейдите в директорию проекта и установите библиотеку:
-   ```bash
-   cd console-ui
-   pip install .
-   ```
-
-Или установите через `pip` после публикации:
-   ```bash
-   pip install console-ui
-   ```
+ ```bash
+ pip install .
+ ```
 
 ## Быстрый старт
 
@@ -65,6 +54,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
+Примеры вы можете глянуть в папке `example`
+
+```python
+from example.sandbox import start_example
+
+start_example()
 ```
 
 ## Описание контролов
