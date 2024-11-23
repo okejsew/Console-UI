@@ -8,7 +8,7 @@ class Checkbox(Control):
         self.checked: bool = False
         self.event.mouse_click.set(self.on_click)
 
-    def on_click(self, e):  # noqa
+    def on_click(self, _):
         self.checked = not self.checked
 
     def __str__(self):
