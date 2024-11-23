@@ -4,7 +4,6 @@ from threading import Thread
 from typing import Optional
 
 from console.control import Control
-from console.controls.label import Label
 from console.events.key_pressed import KeyPressedEventArgs
 from console.events.mouse_click import MouseClickEventArgs
 from console.events.mouse_enter import MouseEnterEventArgs
@@ -21,7 +20,7 @@ class ConsoleWindow:
         self.prev_controls: list[Control] = []
         self.curr_controls: list[Control] = []
         self.prev_pos = {'x': 0, 'y': 0}
-        self.controls_under_mouse: list[Control] = []
+        self.thread: Optional[Thread] = None
 
     def add(self, control: Control):
         if control not in self.controls:
@@ -49,12 +48,12 @@ class ConsoleWindow:
 
     def _show(self, window: curses.window):
         self.setup(window)
-        Thread(target=self.rendering).start()
+        self.thread = Thread(target=self.rendering).start()
         while self.is_showing:
-            self.update_controls_under_mouse()
+            self.update_mouse()
             key = self.window.getch()
             self.key_handler(key)
-            self.mouse_hover_handler()
+            self.mouse_handler()
 
     def render_controls(self):
         for control in self.controls:
@@ -74,7 +73,7 @@ class ConsoleWindow:
         _, x, y, _, button = curses.getmouse()
         return y, x, button
 
-    def update_controls_under_mouse(self):
+    def update_mouse(self):
         y, x, _ = self.get_mouse()
         self.curr_controls.clear()
         for control in self.controls:
@@ -83,7 +82,7 @@ class ConsoleWindow:
             if start_y <= y < start_y + size_y and start_x <= x < start_x + size_x:
                 self.curr_controls.append(control)
 
-    def mouse_click_handler(self):
+    def click_handler(self):
         void_clicked: bool = True
         y, x, btn = self.get_mouse()
         for control in self.curr_controls:
@@ -93,7 +92,7 @@ class ConsoleWindow:
         if void_clicked:
             self.focus = None
 
-    def mouse_hover_handler(self):
+    def mouse_handler(self):
         y, x, _ = self.get_mouse()
         for control in self.curr_controls:
             if control not in self.prev_controls:
@@ -110,7 +109,7 @@ class ConsoleWindow:
         if key == ord('q'):
             self.end()
         elif key == curses.KEY_MOUSE:
-            self.mouse_click_handler()
+            self.click_handler()
         elif self.focus:
             self.focus.event.key_pressed(KeyPressedEventArgs(key))
 
@@ -120,5 +119,6 @@ class ConsoleWindow:
 
     def end(self):
         self.is_showing = False
+        self.thread.join()
         self.window.clear()
         curses.endwin()
