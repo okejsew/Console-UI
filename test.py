@@ -3,6 +3,7 @@ from random import randint
 from console import ConsoleWindow, Location
 from console.controls.button import Button
 from console.controls.checkbox import Checkbox
+from console.controls.dropdown import DropDown
 from console.controls.label import Label
 from console.controls.progressbar import ProgressBar
 from console.controls.slider import Slider
@@ -38,12 +39,16 @@ class MyWindow(ConsoleWindow):
         self.s.location = Location(13, 1)
         self.s.show_percents = True
 
+        self.d = DropDown()
+        self.d.location = Location(15, 1)
+
         self.add(self.textbox)
         self.add(self.label)
         self.add(self.button)
         self.add(self.cb)
         self.add(self.pb)
         self.add(self.s)
+        self.add(self.d)
         self.times: int = 0
 
     def shimmy(self, e): # noqa

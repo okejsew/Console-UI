@@ -15,4 +15,4 @@ class Button(Control):
         self.__focused = False
 
     def __str__(self):
-        return f'[:{self.text}:]' if self.__focused else f'[ {self.text} ]'
+        return f'[>{self.text}<]' if self.__focused else f'[ {self.text} ]'
