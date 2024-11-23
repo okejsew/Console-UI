@@ -8,7 +8,7 @@ class Button(Control):
         self.event.mouse_exit.set(self.mouse_exit)
         self.__focused = False
 
-    def mouse_enter(self):
+    def mouse_enter(self, e): # noqa
         self.__focused = True
 
     def mouse_exit(self):

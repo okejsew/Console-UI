@@ -21,12 +21,8 @@ class MyWindow(ConsoleWindow):
 
         self.label = Label()
         self.label.location = Location(7, 1)
-        self.label.event.mouse_enter.set(lambda: setattr(self.label, 'text', 'Hello!'))
+        self.label.event.mouse_enter.set(lambda e: setattr(self.label, 'text', 'Hello!'))
 
-        self.s = Slider()
-        self.s.value = 4
-        self.s.location = Location(13, 1)
-        self.s.show_percents = True
 
         self.pb = ProgressBar()
         self.pb.location = Location(9, 1)
@@ -36,6 +32,11 @@ class MyWindow(ConsoleWindow):
 
         self.cb = Checkbox()
         self.cb.location = Location(11, 1)
+
+        self.s = Slider()
+        self.s.value = 4
+        self.s.location = Location(13, 1)
+        self.s.show_percents = True
 
         self.add(self.textbox)
         self.add(self.label)

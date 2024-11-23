@@ -7,6 +7,7 @@ from console.control import Control
 from console.controls.label import Label
 from console.events.key_pressed import KeyPressedEventArgs
 from console.events.mouse_click import MouseClickEventArgs
+from console.events.mouse_enter import MouseEnterEventArgs
 from console.layout import Location
 
 
@@ -93,9 +94,10 @@ class ConsoleWindow:
             self.focus = None
 
     def mouse_hover_handler(self):
+        y, x, _ = self.get_mouse()
         for control in self.curr_controls:
             if control not in self.prev_controls:
-                control.event.mouse_enter()
+                control.event.mouse_enter(MouseEnterEventArgs(x, y))
         for control in self.prev_controls:
             if control not in self.curr_controls:
                 control.event.mouse_exit()
