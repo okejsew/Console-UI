@@ -11,29 +11,23 @@ from console.controls.textbox import TextBox
 from console.events.mouse_click import MouseClickEventArgs
 
 
-
 def mouse_click(_: MouseClickEventArgs):
-    l = list(btn.text)
-    shuffle(l)
+    shuffle(l := list(btn.text))
     btn.text = ''.join(l)
 
-btn = Button(Location(1, 1), 'Click ME')
+
+controls = [
+    btn := Button(Location(1, 1), 'Click ME'),
+    Label(Location(3, 1), 'Just a regular label'),
+    ProgressBar(Location(5, 1), 4, width=25),
+    Slider(Location(7, 1), show_percents=True),
+    TextBox(Location(13, 1), title='Почему бы и нет', placeholder='</>'),
+    DropDown(Location(1, 30), items=[
+        'Капучино', 'Мокачино', 'Айс Латте', 'Американо',
+        'Эспрессо', 'Молочный Шоколад', 'Водичка']),
+    Checkbox(Location(11, 1))
+]
 btn.event.mouse_click.set(mouse_click)
 
-lbl = Label(Location(3, 1), 'Just a regular label')
-
-pb = ProgressBar(Location(5, 1), 4, width=25)
-
-sld = Slider(Location(7, 1), show_percents=True)
-
-tb = TextBox(Location(13, 1), title='Почему бы и нет', placeholder='</>')
-
-items = ['Капучино', 'Мокачино', 'Айс Латте', 'Американо', 'Эспрессо', 'Молочный Шоколад', 'Водичка']
-dd = DropDown(Location(1, 30), items=items)
-
-cb = Checkbox(Location(11, 1))
-
-window = ConsoleWindow([btn, lbl, pb, sld, tb, dd, cb])
-
 def start_example():
-    window.show()
+    ConsoleWindow(controls).show()
