@@ -1,22 +1,28 @@
 import curses
 
-from console import Control
+from console import Control, Location
 from console.events.key_pressed import KeyPressedEventArgs
 from console.events.mouse_click import MouseClickEventArgs
 
 
 class DropDown(Control):
-    def __init__(self):
-        super().__init__()
-        self.items: list[str] = []
-        self.index: int = 0
-        self.sindex = 0
-
-        self.sign = {False: '>', True: 'v'}
-        self.width = 10
-        self.max_drop = 5
-        self.style = '[ {} ]'
-        self.list_style = '| {} |'
+    def __init__(self,
+                 location: Location = Location(),
+                 width: int = 10,
+                 max_drop: int = 5,
+                 style: str = '[ {} ]',
+                 list_style: str = '| {} |',
+                 sign: dict[bool, str] = None,
+                 items: list[str] = None,
+                 index: int = 0,
+                 sindex: int = 0):
+        super().__init__(location)
+        sign = {False: '>', True: 'v'} if sign is None else sign
+        items = [] if items is None else items
+        self.items, self.sign = items, sign
+        self.index, self.sindex = index, sindex
+        self.width, self.max_drop = width, max_drop
+        self.style, self.list_style = style, list_style
 
         self.__is_open: bool = False
         self.setup_events()

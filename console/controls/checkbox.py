@@ -1,13 +1,13 @@
-from console import Control
+from console import Control, Location
 from console.events.key_pressed import KeyPressedEventArgs
 
 
 class Checkbox(Control):
-    def __init__(self):
-        super().__init__()
-        self.text: str = 'Checkbox'
-        self.style = '[{}] {}'
-        self.fill = '*'
+    def __init__(self, location: Location = Location(), text: str = 'Checkbox', style: str = '[{}] {}', fill: str = '*'):
+        super().__init__(location)
+        self.text = text
+        self.style = style
+        self.fill = fill
 
         self.checked: bool = False
         self.setup_events()

@@ -10,51 +10,30 @@ from console.controls.slider import Slider
 from console.controls.textbox import TextBox
 from console.events.mouse_click import MouseClickEventArgs
 
-window = ConsoleWindow()
+
 
 def mouse_click(_: MouseClickEventArgs):
     l = list(btn.text)
     shuffle(l)
     btn.text = ''.join(l)
 
-btn = Button()
-btn.location = Location(1, 1)
-btn.text = 'Click ME'
+btn = Button(Location(1, 1), 'Click ME')
 btn.event.mouse_click.set(mouse_click)
 
-lbl = Label()
-lbl.location = Location(3, 1)
-lbl.text = 'Just a regular label'
+lbl = Label(Location(3, 1), 'Just a regular label')
 
-pb = ProgressBar()
-pb.location = Location(5, 1)
-pb.value = 4
-pb.width = 25
+pb = ProgressBar(Location(5, 1), 4, width=25)
 
-sld = Slider()
-sld.location = Location(7, 1)
-sld.show_percents = True
+sld = Slider(Location(7, 1), show_percents=True)
 
-tb = TextBox()
-tb.location = Location(13, 1)
-tb.title = 'Почему бы и нет'
-tb.placeholder = '</>'
+tb = TextBox(Location(13, 1), title='Почему бы и нет', placeholder='</>')
 
-dd = DropDown()
-dd.location = Location(1, 30)
-dd.items = ['Капучино', 'Мокачино', 'Айс Латте', 'Американо', 'Эспрессо', 'Молочный Шоколад', 'Водичка']
+items = ['Капучино', 'Мокачино', 'Айс Латте', 'Американо', 'Эспрессо', 'Молочный Шоколад', 'Водичка']
+dd = DropDown(Location(1, 30), items=items)
 
-cb = Checkbox()
-cb.location = Location(11, 1)
+cb = Checkbox(Location(11, 1))
 
-
-window.add(btn)
-window.add(lbl)
-window.add(cb)
-window.add(pb)
-window.add(tb)
-window.add(dd)
-window.add(sld)
+window = ConsoleWindow([btn, lbl, pb, sld, tb, dd, cb])
 
 def start_example():
     window.show()

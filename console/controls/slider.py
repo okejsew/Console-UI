@@ -1,26 +1,32 @@
-import curses
-
+from console import Location
 from console.controls.progressbar import ProgressBar
 from console.events.key_pressed import KeyPressedEventArgs
 from console.events.mouse_click import MouseClickEventArgs
 
 
 class Slider(ProgressBar):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,
+                 location: Location = Location(),
+                 value: int = 0,
+                 max_value: int = 10,
+                 width: int = 10,
+                 show_percents: bool = False,
+                 fill: str = '-',
+                 style: str = '[{}]',
+                 slider: str = '+'):
+        super().__init__(location, value, max_value, width, show_percents, fill, style)
         self.event.mouse_click.set(self.mouse_click)
         self.event.key_pressed.set(self.key_pressed)
-        self.fill = '-'
-        self.slider = '+'
+        self.slider = slider
 
     def mouse_click(self, e: MouseClickEventArgs):
         self.value = e.x - self.location.x
 
     def key_pressed(self, e: KeyPressedEventArgs):
         match e.key:
-            case curses.KEY_LEFT:
+            case 260:
                 self.value -= 1
-            case curses.KEY_RIGHT:
+            case 261:
                 self.value += 1
         self.check()
 

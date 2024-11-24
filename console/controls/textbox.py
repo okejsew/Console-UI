@@ -1,15 +1,19 @@
-from console import Control
+from console import Control, Location
 from console.events.key_pressed import KeyPressedEventArgs
 
 
 class TextBox(Control):
-    def __init__(self):
-        super().__init__()
-        self.text = ''
-        self.title = 'TextBox'
-        self.placeholder = 'Enter your text here'
-        self.readonly: bool = False
-        self.border = {'tl': '┌', 'tr': '┐', 'bl': '└', 'br': '┘', 'wall': '│', 'ceil': '─'}
+    def __init__(self,
+                 location: Location = Location(),
+                 text: str = '',
+                 title: str = 'TextBox',
+                 placeholder: str = 'Enter your text here',
+                 readonly: bool = False,
+                 border: dict[str, str] = None):
+        super().__init__(location)
+        border = {'tl': '┌', 'tr': '┐', 'bl': '└', 'br': '┘', 'wall': '│', 'ceil': '─'} if border is None else border
+        self.text, self.title, self.border = text, title, border
+        self.placeholder, self.readonly = placeholder, readonly
         self.setup_events()
 
     def setup_events(self):

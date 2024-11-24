@@ -3,9 +3,9 @@ from console.layout import Location
 
 
 class Control:
-    def __init__(self):
+    def __init__(self, location: Location = Location()):
         self.visible: bool = True
-        self.location: Location = Location()
+        self.location: Location = location
         self.event: EventManager = EventManager()
 
     def get_size(self) -> tuple[int, int]:

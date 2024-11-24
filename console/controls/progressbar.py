@@ -1,16 +1,19 @@
-from console import Control
+from console import Control, Location
 
 
 class ProgressBar(Control):
-    def __init__(self):
-        super().__init__()
-        self.value: int = 0
-        self.max_value: int = 10
-        self.width: int = 10
-        self.show_percents: bool = False
-
-        self.fill = '#'
-        self.style = '[{}]'
+    def __init__(self,
+                 location: Location = Location(),
+                 value: int = 0,
+                 max_value: int = 10,
+                 width: int = 10,
+                 show_percents: bool = False,
+                 fill: str = '#',
+                 style: str = '[{}]'):
+        super().__init__(location)
+        self.value, self.max_value = value, max_value
+        self.width, self.show_percents = width, show_percents
+        self.fill, self.style = fill, style
 
     def check(self):
         self.value = max(min(self.value, self.max_value), 0)

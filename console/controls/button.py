@@ -1,12 +1,12 @@
-from console import Control
+from console import Control, Location
 
 
 class Button(Control):
-    def __init__(self):
-        super().__init__()
-        self.text: str = 'Button'
-        self.style = '[ {} ]'
-        self.focused_style = '[>{}<]'
+    def __init__(self, location: Location = Location(), text: str = 'Button', style: str = '[ {} ]', focused_style: str = '[>{}<]'):
+        super().__init__(location)
+        self.text: str = text
+        self.style = style
+        self.focused_style = focused_style
 
         self.__focused = False
         self.setup_events()

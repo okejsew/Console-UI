@@ -11,14 +11,15 @@ from console.layout import Location
 
 
 class ConsoleWindow:
-    def __init__(self):
+    def __init__(self, controls: list[Control] = None):
+        controls = [] if controls is None else controls
         self.is_showing: bool = False
 
         self.window: Optional[curses.window] = None
         self.focus: Optional[Control] = None
         self.thread: Optional[Thread] = None
 
-        self.controls: list[Control] = []
+        self.controls: list[Control] = controls
         self.prev_controls: list[Control] = []
         self.curr_controls: list[Control] = []
 
