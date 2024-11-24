@@ -1,5 +1,4 @@
 import curses
-from operator import index
 
 from console import Control
 from console.events.key_pressed import KeyPressedEventArgs
@@ -9,36 +8,39 @@ from console.events.mouse_click import MouseClickEventArgs
 class DropDown(Control):
     def __init__(self):
         super().__init__()
-        self.items: list[str] = [f'Item{i}' for i in range(100)] + ['rgheuihgie']
+        self.items: list[str] = []
         self.index: int = 0
         self.sindex = 0
-        self.sign_close = 'v'
-        self.sign_open = '>'
+
+        self.sign = {False: '>', True: 'v'}
         self.width = 10
         self.max_drop = 5
+        self.style = '[ {} ]'
+        self.list_style = '| {} |'
 
         self.__is_open: bool = False
+        self.setup_events()
+
+    def setup_events(self):
         self.event.mouse_click.set(self.mouse_click)
         self.event.key_pressed.set(self.key_pressed)
 
     def switch(self):
         self.__is_open = not self.__is_open
 
+    def change_item(self, value: int):
+        if not self.__is_open:
+            self.index += value
+            self.sindex = self.index
+        else:
+            self.sindex += value
+        self.check()
+
     def key_pressed(self, e: KeyPressedEventArgs):
         if e.key == curses.KEY_UP:
-            if not self.__is_open:
-                self.index -= 1
-                self.sindex = self.index
-            else:
-                self.sindex -= 1
+            self.change_item(-1)
         elif e.key == curses.KEY_DOWN:
-            if not self.__is_open:
-                self.index += 1
-                self.sindex = self.index
-            else:
-                self.sindex += 1
-        self.index = min(len(self.items)-1, max(self.index, 0))
-        self.sindex = min(len(self.items)-self.max_drop, max(self.sindex, 0))
+            self.change_item(1)
 
     def mouse_click(self, e: MouseClickEventArgs):
         x, y = e.x - self.location.x, e.y - self.location.y
@@ -48,20 +50,30 @@ class DropDown(Control):
             if y > 0 and x > 2:
                 self.index = y + self.sindex - 1
                 self.sindex = self.index
-                self.switch()
+                self.__is_open = False
+
+    def check(self):
+        self.index = min(len(self.items) - 1, max(self.index, 0))
+        self.sindex = min(len(self.items) - self.max_drop, max(self.sindex, 0))
+
+    def normalize(self, string: str) -> str:
+        return (f'{string[:self.width - 2]}..' if len(string) >= self.width else string).ljust(self.width)
 
     def __str__(self):
-        up_limit = self.sindex + self.max_drop if self.sindex + self.max_drop < len(self.items) else len(self.items)
-        items = self.items[self.sindex:up_limit]
+        # Сырой стиль dropdown готовый к форматированию
+        sign = self.sign[self.__is_open]
+        dropdown_raw = '{} {}\n'.format(sign, self.style)
 
-        text = self.items[self.index] if self.index < len(self.items) else ''
-        text = f'{text[:self.width - 2]}..' if len(text) >= self.width else text
-        text = text.ljust(self.width)
+        if not len(self.items):  # Если нет элементов, возвращаем пустой dropdown
+            return dropdown_raw.format(self.normalize(''))
 
-        dropdown = f'{self.sign_close if self.__is_open else self.sign_open} [ {text} ]\n'
-        if self.__is_open:
-            for item in items:
-                item = f'{item[:self.width - 2]}..' if len(item) >= self.width else item
-                dropdown += f'  | {item.ljust(self.width)} |\n'
+        self.check()  # Стабилизируем индексы во избежание ошибок и добавляем текст
+        dropdown = dropdown_raw.format(self.normalize(self.items[self.index]))
+        if not self.__is_open:  # Возвращаем если dropdown закрыт
+            return dropdown
 
+        # Вычисляем какие элементы нужно показать в выпавшем списке
+        up_limit = min(self.sindex + self.max_drop, len(self.items))
+        for item in self.items[self.sindex:up_limit]:  # Готовим и добавляем к dropdown'у
+            dropdown += f'  {self.list_style.format(self.normalize(item))}\n'
         return dropdown

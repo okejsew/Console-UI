@@ -1,12 +1,19 @@
 from console import Control
 
+
 class Button(Control):
     def __init__(self):
         super().__init__()
         self.text: str = 'Button'
+        self.style = '[ {} ]'
+        self.focused_style = '[>{}<]'
+
+        self.__focused = False
+        self.setup_events()
+
+    def setup_events(self):
         self.event.mouse_enter.set(self.mouse_enter)
         self.event.mouse_exit.set(self.mouse_exit)
-        self.__focused = False
 
     def mouse_enter(self, _):
         self.__focused = True
@@ -15,4 +22,7 @@ class Button(Control):
         self.__focused = False
 
     def __str__(self):
-        return f'[>{self.text}<]' if self.__focused else f'[ {self.text} ]'
+        if self.__focused:
+            return self.focused_style.format(self.text)
+        else:
+            return self.style.format(self.text)

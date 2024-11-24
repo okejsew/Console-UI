@@ -1,5 +1,3 @@
-import curses
-
 from console import Control
 from console.events.key_pressed import KeyPressedEventArgs
 
@@ -8,7 +6,13 @@ class Checkbox(Control):
     def __init__(self):
         super().__init__()
         self.text: str = 'Checkbox'
+        self.style = '[{}] {}'
+        self.fill = '*'
+
         self.checked: bool = False
+        self.setup_events()
+
+    def setup_events(self):
         self.event.mouse_click.set(self.on_click)
         self.event.key_pressed.set(self.key_pressed)
 
@@ -20,4 +24,4 @@ class Checkbox(Control):
         self.checked = not self.checked
 
     def __str__(self):
-        return f'[{"*" if self.checked else " "}] {self.text}'
+        return self.style.format(self.fill if self.checked else ' ', self.text)

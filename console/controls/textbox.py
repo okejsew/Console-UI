@@ -1,6 +1,5 @@
 from console import Control
 from console.events.key_pressed import KeyPressedEventArgs
-from console.keys import Keys
 
 
 class TextBox(Control):
@@ -10,23 +9,46 @@ class TextBox(Control):
         self.title = 'TextBox'
         self.placeholder = 'Enter your text here'
         self.readonly: bool = False
+        self.border = {'tl': '┌', 'tr': '┐', 'bl': '└', 'br': '┘', 'wall': '│', 'ceil': '─'}
+        self.setup_events()
+
+    def setup_events(self):
         self.event.key_pressed.set(self.key_pressed)
 
     def key_pressed(self, e: KeyPressedEventArgs):
-        if e.key == Keys.BACKSPACE:
+        if self.readonly:
+            return
+        if e.key == 8:
             self.text = self.text[:-1] if self.text else self.text
         elif e.key == 10:
             self.text += '\n'
-        elif 32 <= e.key <= 126:
+        else:
             self.text += chr(e.key)
 
-    def __str__(self):
-        text = self.text.split('\n') if self.text else [self.placeholder]
-        size_x = max(*[len(line) for line in text], len(self.title))
+    def get_text_width(self, text: list[str]) -> int:
+        return max(*[len(line) for line in text], len(self.title))
 
-        result = f'┌{self.title.ljust(size_x, "─")}┐\n'
+    def generate_title(self, width: int) -> str:
+        return self.title.ljust(width, self.border['ceil'])
+
+    def generate_ceiling(self, title: str) -> str:
+        return self.border['tl'] + title + self.border['tr'] + '\n'
+
+    def generate_floor(self, width) -> str:
+        return self.border['bl'] + self.border['ceil'] * width + self.border['br']
+
+    def frame(self, text: list[str]) -> str:
+        textbox = ''
+        width = self.get_text_width(text)
+        title = self.generate_title(width)
+        ceiling = self.generate_ceiling(title)
+        floor = self.generate_floor(width)
         for line in text:
-            result += f'│{line.ljust(size_x)}│\n'
-        result += '└' + '─' * size_x + '┘'
+            textbox += self.border['wall'] + line.ljust(width) + self.border['wall'] + '\n'
+        return ceiling + textbox + floor
 
-        return result
+    def __str__(self):
+        if not self.text:
+            return self.frame([self.placeholder])
+        else:
+            return self.frame(self.text.split('\n'))

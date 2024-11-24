@@ -2,9 +2,11 @@ from typing import Callable
 
 from console.event import Event
 
+
 class MouseEnterEventArgs:
     def __init__(self, x, y):
         self.x, self.y = x, y
+
 
 class MouseEnterEvent(Event):
     def __init__(self):

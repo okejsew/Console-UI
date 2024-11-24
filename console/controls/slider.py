@@ -10,6 +10,8 @@ class Slider(ProgressBar):
         super().__init__()
         self.event.mouse_click.set(self.mouse_click)
         self.event.key_pressed.set(self.key_pressed)
+        self.fill = '-'
+        self.slider = '+'
 
     def mouse_click(self, e: MouseClickEventArgs):
         self.value = e.x - self.location.x
@@ -20,12 +22,12 @@ class Slider(ProgressBar):
                 self.value -= 1
             case curses.KEY_RIGHT:
                 self.value += 1
+        self.check()
 
     def __str__(self):
-        self.value = max(min(self.value, self.max_value), 0)
-        length = int(self.width * (self.value / self.max_value))
-        line = '-'*(length-1) + '+'
-        result = f'[{line.ljust(self.width)}]'
+        self.check()
+        line = self.get_filling() + self.slider
+        result = self.style.format(line.ljust(self.width))
         if self.show_percents:
-            result += f' {int(self.value / self.max_value * 100)}%'
+            result += f' {self.get_percents()}%'
         return result

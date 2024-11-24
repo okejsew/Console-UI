@@ -1,5 +1,5 @@
-from console.events.mouse_click import MouseClickEvent
 from console.events.key_pressed import KeyPressedEvent
+from console.events.mouse_click import MouseClickEvent
 from console.events.mouse_enter import MouseEnterEvent
 from console.events.mouse_exit import MouseExitEvent
 

@@ -13,14 +13,14 @@ from console.layout import Location
 class ConsoleWindow:
     def __init__(self):
         self.is_showing: bool = False
+
         self.window: Optional[curses.window] = None
+        self.focus: Optional[Control] = None
+        self.thread: Optional[Thread] = None
 
         self.controls: list[Control] = []
-        self.focus: Optional[Control] = None
         self.prev_controls: list[Control] = []
         self.curr_controls: list[Control] = []
-        self.prev_pos = {'x': 0, 'y': 0}
-        self.thread: Optional[Thread] = None
 
     def add(self, control: Control):
         if control not in self.controls:
@@ -39,21 +39,39 @@ class ConsoleWindow:
         self.is_showing = True
         curses.wrapper(self._show)
 
-    def rendering(self):
+    def force_end(self, ex: Exception):
+        self.end()
+        input(f'Произошла ошибка: {ex}')
+
+    def renderer(self):
+        exception = None
         while self.is_showing:
-            self.window.clear()
-            self.render_controls()
-            self.window.refresh()
-            time.sleep(0.016)
+            try:
+                self.window.clear()
+                self.render_controls()
+                self.window.refresh()
+                time.sleep(0.016)
+            except Exception as ex:
+                exception = ex
+                break
+        self.force_end(exception)
+
 
     def _show(self, window: curses.window):
         self.setup(window)
-        self.thread = Thread(target=self.rendering).start()
+        self.thread = Thread(target=self.renderer)
+        self.thread.start()
+        exception = None
         while self.is_showing:
-            self.update_mouse()
-            key = self.window.getch()
-            self.key_handler(key)
-            self.mouse_handler()
+            try:
+                self.update_mouse()
+                key = self.window.getch()
+                self.key_handler(key)
+                self.mouse_handler()
+            except Exception as ex:
+                exception = ex
+                break
+        self.force_end(exception)
 
     def render_controls(self):
         for control in self.controls:
@@ -119,6 +137,9 @@ class ConsoleWindow:
 
     def end(self):
         self.is_showing = False
-        self.thread.join()
+        try:
+            self.thread.join()
+        except Exception as ex:
+            print(f'Ошибка произошла не в главном потоке ({ex})')
         self.window.clear()
         curses.endwin()
