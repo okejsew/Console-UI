@@ -18,42 +18,34 @@
   - Наведение/уход мыши
   - Нажатие клавиш на клавиатуре
 
-## Установка
-
- ```bash
- pip install .
- ```
-
 ## Быстрый старт
 
 Пример использования библиотеки для создания окна с кнопкой и чекбоксом:
 
 ```python
-from console import ConsoleWindow
+from console import ConsoleWindow, Location
 from console.controls.button import Button
 from console.controls.checkbox import Checkbox
 
+
 def main():
-    # Создаем окно
-    window = ConsoleWindow()
+  # Создаем кнопку
+  button = Button(text=' ', 
+                  location=Location(5,2))
+                  
+  # Создаем чекбокс
+  checkbox = Checkbox(text='I agree',
+                      location=Location(5, 5))
+  
+  # Создаем окно и добавляем элементы
+  window = ConsoleWindow([checkbox, button])
 
-    # Добавляем кнопку
-    button = Button()
-    button.text = "Click Me!"
-    button.location.x, button.location.y = 5, 2
-    window.add(button)
+  # Отображаем окно
+  window.show()
 
-    # Добавляем чекбокс
-    checkbox = Checkbox()
-    checkbox.text = "I agree"
-    checkbox.location.x, checkbox.location.y = 5, 5
-    window.add(checkbox)
-
-    # Отображаем окно
-    window.show()
 
 if __name__ == "__main__":
-    main()
+  main()
 ```
 
 Примеры вы можете глянуть в папке `example`
@@ -172,10 +164,3 @@ textbox.title = "Input"
 textbox.placeholder = "Enter your name"
 textbox.location.x, textbox.location.y = 15, 5
 ```
-
----
-
-## Требования
-- Python 3.6+
-- `curses` (встроена в стандартную библиотеку Python на Unix-подобных системах).
-- `windows-curses` если вы на Windows
