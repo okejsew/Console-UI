@@ -1,4 +1,4 @@
-from console import Location
+from console.layout import Location
 from console.controls.progressbar import ProgressBar
 from console.events.key_pressed import KeyPressedEventArgs
 from console.events.mouse_click import MouseClickEventArgs

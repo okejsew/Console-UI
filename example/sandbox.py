@@ -1,15 +1,6 @@
 from random import shuffle
 
-from console import ConsoleWindow, Location
-from console.controls.button import Button
-from console.controls.checkbox import Checkbox
-from console.controls.dropdown import DropDown
-from console.controls.label import Label
-from console.controls.progressbar import ProgressBar
-from console.controls.slider import Slider
-from console.controls.textbox import TextBox
-from console.events.mouse_click import MouseClickEventArgs
-
+from console import *
 
 def mouse_click(_: MouseClickEventArgs):
     shuffle(l := list(btn.text))

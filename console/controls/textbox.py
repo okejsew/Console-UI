@@ -1,4 +1,5 @@
-from console import Control, Location
+from console.control import Control
+from console.layout import Location
 from console.events.key_pressed import KeyPressedEventArgs
 
 
