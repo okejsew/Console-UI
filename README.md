@@ -23,10 +23,7 @@
 Пример использования библиотеки для создания окна с кнопкой и чекбоксом:
 
 ```python
-from console import ConsoleWindow, Location
-from console.controls.button import Button
-from console.controls.checkbox import Checkbox
-
+from console import *
 
 def main():
   # Создаем кнопку
@@ -65,6 +62,7 @@ start_example()
 
 Пример:
 ```python
+from console import *
 button = Button()
 button.text = "Submit"
 button.location.x, button.location.y = 2, 3
@@ -80,6 +78,7 @@ button.location.x, button.location.y = 2, 3
 
 Пример:
 ```python
+from console import *
 checkbox = Checkbox()
 checkbox.text = "Accept Terms"
 checkbox.checked = True
@@ -97,6 +96,7 @@ checkbox.location.x, checkbox.location.y = 4, 6
 
 Пример:
 ```python
+from console import *
 dropdown = Dropdown()
 dropdown.items = ["Option 1", "Option 2", "Option 3"]
 dropdown.location.x, dropdown.location.y = 8, 4
@@ -111,6 +111,7 @@ dropdown.location.x, dropdown.location.y = 8, 4
 
 Пример:
 ```python
+from console import *
 label = Label()
 label.text = "Hello, World!"
 label.location.x, label.location.y = 0, 0
@@ -127,6 +128,7 @@ label.location.x, label.location.y = 0, 0
 
 Пример:
 ```python
+from console import *
 progress = ProgressBar()
 progress.value = 5
 progress.max_value = 10
@@ -142,6 +144,7 @@ progress.location.x, progress.location.y = 10, 2
 
 Пример:
 ```python
+from console import *
 slider = Slider()
 slider.value = 3
 slider.max_value = 10
@@ -159,6 +162,7 @@ slider.location.x, slider.location.y = 12, 4
 
 Пример:
 ```python
+from console import *
 textbox = TextBox()
 textbox.title = "Input"
 textbox.placeholder = "Enter your name"
