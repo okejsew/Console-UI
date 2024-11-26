@@ -1,6 +1,7 @@
 import curses
 import time
 from threading import Thread
+from traceback import print_exception
 from typing import Optional
 
 from console.control import Control
@@ -41,6 +42,7 @@ class ConsoleWindow:
 
     def force_end(self, ex: Exception):
         self.end()
+        print_exception(ex)
         input(f'Произошла ошибка: {ex}')
 
     def renderer(self):

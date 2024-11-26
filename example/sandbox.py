@@ -1,6 +1,8 @@
 from random import shuffle
 
 from console import *
+from console.controls.canvas import Canvas
+
 
 def mouse_click(_: MouseClickEventArgs):
     shuffle(l := list(btn.text))
@@ -16,9 +18,11 @@ controls = [
     DropDown(Location(1, 30), items=[
         'Капучино', 'Мокачино', 'Айс Латте', 'Американо',
         'Эспрессо', 'Молочный Шоколад', 'Водичка']),
-    Checkbox(Location(11, 1))
+    Checkbox(Location(11, 1)),
+    cnv := Canvas(Location(1, 50))
 ]
 btn.event.mouse_click.set(mouse_click)
+cnv.set_point(Location(3, 4), '@')
 
 def start_example():
     ConsoleWindow(controls).show()
