@@ -1,4 +1,5 @@
 import curses
+import os
 import time
 from threading import Thread
 from traceback import print_exception
@@ -11,10 +12,11 @@ from console.events.mouse_enter import MouseEnterEventArgs
 
 
 class ConsoleWindow:
-    def __init__(self, controls: list[Control] = None):
+    def __init__(self, controls: list[Control] = None, title: str = 'ConsoleWindow'):
         controls = [] if controls is None else controls
         self.is_showing: bool = False
 
+        self.title: str = title
         self.window: Optional[curses.window] = None
         self.focus: Optional[Control] = None
         self.thread: Optional[Thread] = None
@@ -37,6 +39,7 @@ class ConsoleWindow:
         curses.mousemask(curses.ALL_MOUSE_EVENTS)
 
     def show(self):
+        os.system(f'title {self.title}')
         self.is_showing = True
         curses.wrapper(self._show)
 

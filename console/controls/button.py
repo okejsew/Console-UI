@@ -3,7 +3,7 @@ from console.layout import Location
 
 
 class Button(Control):
-    def __init__(self, location: Location = Location(), text: str = 'Button', style: str = '[ {} ]', focused_style: str = '[>{}<]'):
+    def __init__(self, location: Location = Location(), text: str = 'Button', style: str = '[ {} ]', focused_style: str = ' [{}] '):
         super().__init__(location)
         self.text: str = text
         self.style = style
