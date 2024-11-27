@@ -39,7 +39,6 @@ class ConsoleWindow:
         curses.mousemask(curses.ALL_MOUSE_EVENTS)
 
     def show(self):
-        os.system(f'title {self.title}')
         self.is_showing = True
         curses.wrapper(self._show)
 
@@ -64,6 +63,8 @@ class ConsoleWindow:
 
 
     def _show(self, window: curses.window):
+        os.system(f'title {self.title}')
+        os.system('cls||clear')
         self.setup(window)
         self.thread = Thread(target=self.renderer)
         self.thread.start()
@@ -139,8 +140,14 @@ class ConsoleWindow:
             self.focus.event.key_pressed(KeyPressedEventArgs(key))
 
     def next(self, cwin: 'ConsoleWindow'):
-        self.end()
-        cwin.show()
+        self.is_showing = False
+        try:
+            self.thread.join()
+        except Exception as ex:
+            print(f'Ошибка произошла не в главном потоке ({ex})')
+        self.window.clear()
+        cwin.is_showing = True
+        cwin._show(self.window)
 
     def end(self):
         self.is_showing = False
