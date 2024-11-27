@@ -1,5 +1,6 @@
 from console.control import Control
 from console.controls.button import Button
+from console.controls.canvas import Canvas
 from console.controls.checkbox import Checkbox
 from console.controls.dropdown import DropDown
 from console.controls.label import Label
@@ -11,4 +12,3 @@ from console.events.mouse_click import MouseClickEventArgs
 from console.events.mouse_enter import MouseEnterEventArgs
 from console.layout import Location
 from console.window import ConsoleWindow
-

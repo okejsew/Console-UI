@@ -4,6 +4,9 @@ from console.layout import Location
 
 class Control:
     def __init__(self, location: Location = Location()):
+        from console.window import ConsoleWindow
+        if cwin := ConsoleWindow.auto_add_window:
+            cwin.controls.append(self)
         self.visible: bool = True
         self.location: Location = location
         self.event: EventManager = EventManager()

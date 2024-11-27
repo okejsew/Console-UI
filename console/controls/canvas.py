@@ -1,42 +1,32 @@
 from dataclasses import dataclass
+
 from multipledispatch import dispatch
-from pymsgbox import boxRoot
 
 from console.control import Control
-from console.events.mouse_click import MouseClickEventArgs
 from console.layout import Location
+
 
 @dataclass
 class Point:
     sign: str
     position: Location
 
+
 class Canvas(Control):
-    def __init__(self, location: Location):
+    def __init__(self, location: Location, width: int = 15, height: int = 5, border: bool = True):
         super().__init__(location)
-        self.width = 15
-        self.height = 5
+        self.width = width
+        self.height = height
         self.points: list[Point] = []
-        self.border: bool = True
-        self.setup_events()
-
-    def setup_events(self):
-        self.event.mouse_click.set(self.mouse_click)
-
-    def mouse_click(self, e: MouseClickEventArgs):
-        y, x = e.y - self.location.y, e.x - self.location.x
-        if self.border:
-            self.set_point(Location(y-1, x-1), '@')
-        else:
-            self.set_point(Location(y, x), '@')
+        self.border: bool = border
 
     @dispatch(Location, str)
     def set_point(self, location: Location, sign: str):
-        self.points.append(Point(sign, location))
+        self.points.append(Point(sign.replace('\n', ' '), location))
 
     @dispatch(int, int, str)
     def set_point(self, y: int, x: int, sign: str):
-        self.points.append(Point(sign, Location(y, x)))
+        self.points.append(Point(sign.replace('\n', ' '), Location(y, x)))
 
     def __str__(self):
         buffer = [[' ' for _ in range(self.width)] for _ in range(self.height)]

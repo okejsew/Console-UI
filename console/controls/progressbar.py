@@ -3,18 +3,15 @@ from console.layout import Location
 
 
 class ProgressBar(Control):
-    def __init__(self,
-                 location: Location = Location(),
-                 value: int = 0,
-                 max_value: int = 10,
-                 width: int = 10,
-                 show_percents: bool = False,
-                 fill: str = '#',
-                 style: str = '[{}]'):
+    def __init__(self, location: Location = Location(), value: int = 0, max_value: int = 10, width: int = 10,
+                 show_percents: bool = False, fill: str = '#', style: str = '[{}]'):
         super().__init__(location)
-        self.value, self.max_value = value, max_value
-        self.width, self.show_percents = width, show_percents
-        self.fill, self.style = fill, style
+        self.value = value
+        self.max_value = max_value
+        self.width = width
+        self.show_percents = show_percents
+        self.style = style
+        self.fill = fill
 
     def check(self):
         self.value = max(min(self.value, self.max_value), 0)

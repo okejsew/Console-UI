@@ -1,20 +1,20 @@
 from console.control import Control
-from console.layout import Location
 from console.events.key_pressed import KeyPressedEventArgs
+from console.layout import Location
 
 
 class TextBox(Control):
-    def __init__(self,
-                 location: Location = Location(),
-                 text: str = '',
-                 title: str = 'TextBox',
-                 placeholder: str = 'Enter your text here',
-                 readonly: bool = False,
-                 border: dict[str, str] = None):
+    def __init__(self, location: Location = Location(), text: str = '', title: str = 'TextBox',
+                 placeholder: str = 'Enter your text here', readonly: bool = False, border: dict[str, str] = None,
+                 max_char: int = 64):
         super().__init__(location)
         border = {'tl': '┌', 'tr': '┐', 'bl': '└', 'br': '┘', 'wall': '│', 'ceil': '─'} if border is None else border
-        self.text, self.title, self.border = text, title, border
-        self.placeholder, self.readonly = placeholder, readonly
+        self.text = text
+        self.title = title
+        self.border = border
+        self.placeholder = placeholder
+        self.readonly = readonly
+        self.max_char = max_char
         self.setup_events()
 
     def setup_events(self):
@@ -53,6 +53,8 @@ class TextBox(Control):
         return ceiling + textbox + floor
 
     def __str__(self):
+        if len(self.text) > self.max_char:
+            self.text = self.text[:self.max_char]
         if not self.text:
             return self.frame([self.placeholder])
         else:

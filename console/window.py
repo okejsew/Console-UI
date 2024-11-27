@@ -12,7 +12,12 @@ from console.events.mouse_enter import MouseEnterEventArgs
 
 
 class ConsoleWindow:
+    auto_add: bool = True
+    auto_add_window: Optional['ConsoleWindow'] = None
+
     def __init__(self, controls: list[Control] = None, title: str = 'ConsoleWindow'):
+        if ConsoleWindow.auto_add:
+            ConsoleWindow.auto_add_window = self
         controls = [] if controls is None else controls
         self.is_showing: bool = False
 
