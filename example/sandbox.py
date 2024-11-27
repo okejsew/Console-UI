@@ -3,10 +3,11 @@ from random import shuffle
 from console import *
 from console.controls.canvas import Canvas
 
-
+window = ConsoleWindow()
 def mouse_click(_: MouseClickEventArgs):
     shuffle(l := list(btn.text))
     btn.text = ''.join(l)
+    window.end()
 
 
 controls = [
@@ -25,4 +26,5 @@ btn.event.mouse_click.set(mouse_click)
 cnv.set_point(Location(3, 4), '@')
 
 def start_example():
-    ConsoleWindow(controls).show()
+    window.controls = controls
+    window.show()

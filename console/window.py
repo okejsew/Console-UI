@@ -56,7 +56,8 @@ class ConsoleWindow:
             except Exception as ex:
                 exception = ex
                 break
-        self.force_end(exception)
+        if exception:
+            self.force_end(exception)
 
 
     def _show(self, window: curses.window):
@@ -73,7 +74,8 @@ class ConsoleWindow:
             except Exception as ex:
                 exception = ex
                 break
-        self.force_end(exception)
+        if exception:
+            self.force_end(exception)
 
     def render_controls(self):
         for control in self.controls:
