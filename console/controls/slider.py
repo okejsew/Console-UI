@@ -25,7 +25,7 @@ class Slider(ProgressBar):
 
     def __str__(self):
         self.check()
-        line = self.get_filling() + self.slider
+        line = self.get_filling()[:-1] + self.slider
         result = self.style.format(line.ljust(self.width))
         if self.show_percents:
             result += f' {self.get_percents()}%'

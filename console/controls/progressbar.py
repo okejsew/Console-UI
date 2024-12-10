@@ -1,3 +1,5 @@
+from math import floor
+
 from console.control import Control
 from console.layout import Location
 
